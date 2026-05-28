@@ -9,7 +9,6 @@ on:
     inputs:
       force:
         description: "Force rebuild even if Debian version hasn't changed"
-        default: "false"
 
 jobs:
   build:

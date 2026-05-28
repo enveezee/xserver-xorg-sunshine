@@ -1,5 +1,8 @@
 #!/bin/bash
-if [ "${{ github.event.inputs.force }}" = "true" ]; then
+FORCE="${FORCE:-false}"
+
+if [ "$FORCE" = "true" ]; then
+    echo "skip=false" >> "$GITHUB_OUTPUT"
     echo "Github rebuild forced, skipping version update checks."
     exit 0
 fi
