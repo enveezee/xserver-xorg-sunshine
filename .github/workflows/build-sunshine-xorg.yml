@@ -9,7 +9,6 @@ on:
     inputs:
       force:
         description: "Force rebuild even if Debian version hasn't changed"
-        required: false
         default: "false"
 
 jobs:
@@ -113,6 +112,7 @@ jobs:
           TAG="xorg-$SAFE_VERSION"
 
           gh release create "$TAG" artifacts/xserver-xorg-sunshine_latest_amd64.deb \
+            --clobber \
             --title "Sunshine Xorg $DEBIAN_VERSION" \
             --notes "Automated build of Sunshine-optimized Xorg for Debian stable."
 
