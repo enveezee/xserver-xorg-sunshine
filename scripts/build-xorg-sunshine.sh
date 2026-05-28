@@ -2,13 +2,7 @@
 set -e
 
 # Locate source dir
-PKGDIR=$(\
-    find . -maxdepth 1 -type d\ 
-    (\
-        -name "xorg-server-*" -o\
-        -name "xserver-xorg-core-*"\
-    )\
-    | head -n1 )
+PKGDIR=$(find . -maxdepth 1 -type d ( -name "xorg-server-*" -o -name "xserver-xorg-core-*") | head -n1 )
 if [ -z "$PKGDIR" ]; then
     echo "Source dir not found."
     exit 1
