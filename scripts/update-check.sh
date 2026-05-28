@@ -43,9 +43,11 @@ echo "Latest built version: $LATEST_VERSION"
 
 # Compare
 if [ "$DEBIAN_VERSION" = "$LATEST_VERSION" ]; then
-    echo "No update needed. Exiting."
+    echo "skip=true" >> $GITHUB_OUTPUT
     exit 0
 fi
+
+echo "skip=false" >> $GITHUB_OUTPUT
 
 echo "New version $DEBIAN_VERSION detected. Proceeding with build."
 

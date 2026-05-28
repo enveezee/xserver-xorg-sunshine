@@ -1,9 +1,10 @@
 name: Build Sunshine Xorg (Debian Stable)
+
 on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *
   workflow_dispatch:
     inputs:
       force:
@@ -20,22 +21,34 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check for updates
+        id: updatecheck
         env:
           REPO: ${{ github.repository }}
+          FORCE: ${{ github.event.inputs.force }}
         run: |
           chmod +x ./scripts/update-check.sh
           ./scripts/update-check.sh
 
+      # STOP THE WORKFLOW IF SKIP=true
+      - name: Stop if no build needed
+        if: steps.updatecheck.outputs.skip == 'true'
+        run: |
+          echo "No update needed. Stopping workflow."
+
+      # EVERYTHING BELOW ONLY RUNS IF skip=false
       - name: Install debootstrap
+        if: steps.updatecheck.outputs.skip == 'false'
         run: |
           sudo apt-get update
           sudo apt-get install -y debootstrap
 
       - name: Create Debian stable chroot
+        if: steps.updatecheck.outputs.skip == 'false'
         run: |
           sudo debootstrap --variant=buildd stable /srv/chroot/ http://deb.debian.org/debian
 
       - name: Configure chroot apt sources
+        if: steps.updatecheck.outputs.skip == 'false'
         run: |
           sudo tee /srv/chroot/etc/apt/sources.list > /dev/null << 'EOF'
           deb http://deb.debian.org/debian stable main
@@ -47,16 +60,19 @@ jobs:
           EOF
 
       - name: Update chroot
+        if: steps.updatecheck.outputs.skip == 'false'
         run: |
           sudo chroot /srv/chroot/ apt-get update
           sudo chroot /srv/chroot/ apt-get upgrade -y
 
       - name: Copy repo into chroot
+        if: steps.updatecheck.outputs.skip == 'false'
         run: |
           sudo mkdir -p /srv/chroot/build
           sudo cp -a ./* /srv/chroot/build/
 
       - name: Build inside chroot
+        if: steps.updatecheck.outputs.skip == 'false'
         run: |
           sudo chroot /srv/chroot/ bash -c "
             cd /build
@@ -67,18 +83,21 @@ jobs:
           "
 
       - name: Copy artifacts out of chroot
+        if: steps.updatecheck.outputs.skip == 'false'
         run: |
           mkdir -p artifacts
           sudo cp /srv/chroot/build/artifacts/*.deb artifacts/
 
       - name: Upload built packages
+        if: steps.updatecheck.outputs.skip == 'false'
         uses: actions/upload-artifact@v4
         with:
           name: xserver-xorg-sunshine
           path: artifacts/*.deb
           if-no-files-found: error
-          
+
       - name: Create GitHub Release
+        if: steps.updatecheck.outputs.skip == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -97,5 +116,4 @@ jobs:
             --title "Sunshine Xorg $DEBIAN_VERSION" \
             --notes "Automated build of Sunshine-optimized Xorg for Debian stable."
 
-          echo "Creating release $TAG"
-
+          echo "Created release $TAG"
