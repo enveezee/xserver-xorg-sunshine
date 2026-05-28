@@ -4,7 +4,7 @@ set -e
 case "$1" in
     triggered)
         if [ "$2" = "xserver-xorg-core" ]; then
-            /usr/local/bin/update-sunshine-xorg || true
+            /usr/sbin/update-sunshine-xorg || true
         fi
         ;;
 esac

@@ -2,5 +2,5 @@ opt/xorg-sunshine/bin
 opt/xorg-sunshine/lib
 opt/xorg-sunshine/share
 ../Xorg-sunshine               usr/bin/
-../update-sunshine-xorg        usr/local/bin/
-../xserver-xorg-sunshine-update usr/local/sbin/
+../update-sunshine-xorg        usr/sbin/
+../xserver-xorg-sunshine-update usr/sbin/
