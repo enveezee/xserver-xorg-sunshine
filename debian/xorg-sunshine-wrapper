@@ -1,0 +1,10 @@
+#!/bin/sh
+# Launch Sunshine's custom Xorg with correct module search paths
+
+OPTROOT="/opt/xorg-sunshine"
+XORGBIN="$OPTROOT/bin/Xorg"
+
+# Prefer our modules, but also allow Debian's system modules
+MODULEPATH="$OPTROOT/lib/xorg/modules,/usr/lib/xorg/modules"
+
+exec "$XORGBIN" -modulepath "$MODULEPATH" "$@"

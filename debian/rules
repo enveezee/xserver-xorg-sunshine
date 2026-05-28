@@ -1,0 +1,90 @@
+#!/usr/bin/make -f
+
+confflags = \
+	--prefix=/opt/xorg-sunshine \
+	--exec-prefix=/opt/xorg-sunshine \
+	--bindir=/opt/xorg-sunshine/bin \
+	--sbindir=/opt/xorg-sunshine/bin \
+	--libdir=/opt/xorg-sunshine/lib \
+	--libexecdir=/opt/xorg-sunshine/lib/xorg \
+	--with-module-dir=/opt/xorg-sunshine/lib/xorg/modules \
+	--with-serverconfig-path=/opt/xorg-sunshine/lib/xorg \
+	--sysconfdir=/opt/xorg-sunshine/etc \
+	--datadir=/opt/xorg-sunshine/share \
+	--libexecdir=\$${prefix}/lib/xorg \
+	--with-module-dir=\$${prefix}/lib/xorg/modules \
+	--with-serverconfig-path=\$${libexecdir} \
+	--disable-static \
+	--without-dtrace \
+	--disable-strict-compilation \
+	--disable-debug \
+	--with-int10=x86emu \
+	--with-os-name=linux \
+	--with-os-vendor="Sunshine" \
+	--with-xkb-path=/usr/share/X11/xkb \
+	--with-xkb-output=/var/lib/xkb \
+	--with-shared-memory-dir=/dev/shm \
+	--enable-mitshm \
+	--enable-xres \
+	--enable-dbe \
+	--enable-xorg \
+	--disable-xquartz \
+	--disable-xwayland \
+	--disable-xwin \
+	--disable-install-setuid \
+	--disable-config-hal \
+	--enable-config-udev \
+	--enable-glx \
+	--enable-dri \
+	--enable-dri2 \
+	--enable-dri3 \
+	--enable-glamor \
+	--enable-present \
+	--enable-libdrm \
+	--enable-xv \
+	--enable-xf86vidmode \
+	--disable-xvfb \
+	--disable-xnest \
+	--disable-kdrive \
+	--disable-xephyr \
+	--disable-xinerama \
+	--disable-xdmcp \
+	--disable-xdm-auth-1 \
+	--disable-record \
+	--disable-xvmc \
+	--disable-screensaver \
+	--disable-dpms \
+	--disable-xace \
+	--disable-xselinux \
+	--disable-xfree86-utils \
+	--disable-systemd-logind \
+	--without-systemd-daemon \
+	--disable-libunwind
+
+vars = $(shell DEB_BUILD_MAINT_OPTIONS="hardening=+pie" \
+		  DEB_LDFLAGS_MAINT_APPEND="-Wl,-Bsymbolic" \
+		  dpkg-buildflags --export=configure)
+
+%:
+	dh $@ --with quilt
+
+override_dh_auto_configure:
+	dh_auto_configure --builddirectory=debian/build/main -- \
+		$(confflags) \
+		$(vars)
+
+override_dh_auto_build:
+	dh_auto_build --builddirectory=debian/build/main
+
+override_dh_auto_install:
+	dh_auto_install --builddirectory=debian/build/main \
+		--destdir=debian/tmp
+
+override_dh_install:
+	# With only one binary package in debian/control,
+	# this dumps everything from debian/tmp into that package.
+	dh_install --sourcedir=debian/tmp
+
+override_dh_clean:
+	dh_clean
+	rm -rf debian/build

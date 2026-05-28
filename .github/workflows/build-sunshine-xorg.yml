@@ -1,0 +1,92 @@
+name: Build Sunshine Xorg (Debian Stable)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for updates
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          chmod +x ./scripts/update-check.sh
+          ./scripts/update-check.sh
+
+      - name: Install debootstrap
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debootstrap
+
+      - name: Create Debian stable chroot
+        run: |
+          sudo debootstrap --variant=buildd stable /srv/chroot/ http://deb.debian.org/debian
+
+      - name: Configure chroot apt sources
+        run: |
+          sudo tee /srv/chroot/etc/apt/sources.list > /dev/null << 'EOF'
+          deb http://deb.debian.org/debian stable main
+          deb http://security.debian.org/debian-security stable-security main
+          deb http://deb.debian.org/debian stable-updates main
+          deb-src http://deb.debian.org/debian stable main
+          deb-src http://security.debian.org/debian-security stable-security main
+          deb-src http://deb.debian.org/debian stable-updates main
+          EOF
+
+      - name: Update chroot
+        run: |
+          sudo chroot /srv/chroot/ apt-get update
+          sudo chroot /srv/chroot/ apt-get upgrade -y
+
+      - name: Copy repo into chroot
+        run: |
+          sudo mkdir -p /srv/chroot/build
+          sudo cp -a ./* /srv/chroot/build/
+
+      - name: Build inside chroot
+        run: |
+          sudo chroot /srv/chroot/ bash -c "
+            cd /build
+            apt-get source xserver-xorg-core
+            apt-get -y build-dep xserver-xorg-core
+            chmod +x ./scripts/*.sh
+            ./scripts/build-xorg-sunshine.sh
+          "
+
+      - name: Copy artifacts out of chroot
+        run: |
+          mkdir -p artifacts
+          sudo cp /srv/chroot/build/artifacts/*.deb artifacts/
+
+      - name: Upload built packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: xserver-xorg-sunshine
+          path: artifacts/*.deb
+          if-no-files-found: error
+          
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DEBIAN_VERSION=$(curl -fsS https://packages.debian.org/stable/allpackages?format=txt.gz \
+            | gunzip - \
+            | perl -nE '/^xserver-xorg-core \((.+)\)/ && say $1')
+
+          TAG="xorg-$DEBIAN_VERSION"
+
+          echo "Creating release $TAG"
+
+          gh release create "$TAG" artifacts/*.deb \
+            --title "Sunshine Xorg $DEBIAN_VERSION" \
+            --notes "Automated build of Sunshine-optimized Xorg for Debian stable."
+
