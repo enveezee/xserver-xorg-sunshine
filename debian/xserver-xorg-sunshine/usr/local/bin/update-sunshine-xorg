@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+STATE_DIR="/var/lib/xserver-xorg-sunshine"
+PKG="$STATE_DIR/pending-update.deb"
+MARKER="$STATE_DIR/pending-update.flag"
+
+mkdir -p "$STATE_DIR"
+
+# Download the latest Sunshine-Xorg package (stable filename)
+curl -fsSLo "$PKG" \
+  "https://github.com/enveezee/xserver-xorg-sunshine/releases/latest/download/xserver-xorg-sunshine_latest_amd64.deb" \
+  || exit 0
+
+# Mark that an update is pending
+touch "$MARKER"
+
+# Kick systemd to process the update later (outside dpkg)
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl start xserver-xorg-sunshine-update.service || true
+fi
+
+exit 0

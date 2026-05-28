@@ -14,8 +14,11 @@ cp -r debian/* "$PKGDIR/debian/"
 # Enter the source dir
 cd "$PKGDIR"
 
-# Make the Xorg-sunshine executable
-chmod +x debian/xserver-xorg-sunshine/usr/bin/Xorg-sunshine
+# Manage permissions of added files
+chmod 755 debian/xserver-xorg-sunshine/usr/bin/Xorg-sunshine
+chmod 755 debian/xserver-xorg-sunshine/usr/local/bin/update-sunshine-xorg
+chmod 755 debian/xserver-xorg-sunshine/usr/local/sbin/xserver-xorg-sunshine-update
+chmod 644 debian/xserver-xorg-sunshine/lib/systemd/system/xserver-xorg-sunshine-update.service
 
 # Build the renamed core package
 dpkg-buildpackage -b -d -us -uc -Pnocheck

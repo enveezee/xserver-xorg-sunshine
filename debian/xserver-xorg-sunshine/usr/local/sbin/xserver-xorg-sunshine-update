@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+
+STATE_DIR="/var/lib/xserver-xorg-sunshine"
+PKG="$STATE_DIR/pending-update.deb"
+MARKER="$STATE_DIR/pending-update.flag"
+
+# Nothing to do?
+[ -f "$MARKER" ] || exit 0
+[ -f "$PKG" ] || exit 0
+
+# Wait for dpkg lock to clear
+while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 \
+   || fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+    sleep 2
+done
+
+# Install the update
+dpkg -i "$PKG" || exit 0
+
+# Clean up
+rm -f "$PKG" "$MARKER"
+
+exit 0

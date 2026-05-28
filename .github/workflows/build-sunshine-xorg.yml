@@ -82,11 +82,16 @@ jobs:
             | gunzip - \
             | perl -nE '/^xserver-xorg-core \((.+)\)/ && say $1')
 
-          TAG="xorg-$DEBIAN_VERSION"
+          SAFE_VERSION=$(echo "$DEBIAN_VERSION" | sed 's/[:+]/_/g')
 
-          echo "Creating release $TAG"
+          DEB_FILE=$(ls artifacts/xserver-xorg-sunshine_*_amd64.deb | grep -v dbgsym)
+          mv "$DEB_FILE" artifacts/xserver-xorg-sunshine_latest_amd64.deb
 
-          gh release create "$TAG" artifacts/*.deb \
+          TAG="xorg-$SAFE_VERSION"
+
+          gh release create "$TAG" artifacts/xserver-xorg-sunshine_latest_amd64.deb \
             --title "Sunshine Xorg $DEBIAN_VERSION" \
             --notes "Automated build of Sunshine-optimized Xorg for Debian stable."
+
+          echo "Creating release $TAG"
 

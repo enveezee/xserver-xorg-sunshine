@@ -1,0 +1,11 @@
+[Unit]
+Description=Install pending Sunshine Xorg update
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/xserver-xorg-sunshine-update
+
+[Install]
+WantedBy=multi-user.target
