@@ -9,7 +9,7 @@ if [ -z "$PKGDIR" ]; then
 fi
 
 # Copy our package files
-cp debian/* "$PKGDIR/debian/"
+cp -r debian/* "$PKGDIR/debian/"
 
 # Enter the source dir
 cd "$PKGDIR"
