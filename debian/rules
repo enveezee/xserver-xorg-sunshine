@@ -47,7 +47,7 @@ confflags = \
 	--disable-xnest \
 	--disable-kdrive \
 	--disable-xephyr \
-	--disable-xinerama \
+	--enable-xinerama \
 	--disable-xdmcp \
 	--disable-xdm-auth-1 \
 	--disable-record \
