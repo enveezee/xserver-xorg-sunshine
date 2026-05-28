@@ -103,6 +103,6 @@ Provides:
  xserver-xorg-video-modesetting,
 Maintainer: enveezee <enveezee@gmail.com>
 Description: Headless Xorg server optimized for Sunshine streaming
-This package provides a minimal, headless Xorg build intended for
-GPU-accelerated game streaming via Sunshine. It disables logind,
-suid, Xwayland, nested servers, and other desktop-oriented features.
+ This package provides a minimal, headless Xorg build intended for
+ GPU-accelerated game streaming via Sunshine. It disables logind,
+ suid, Xwayland, nested servers, and other desktop-oriented features.
