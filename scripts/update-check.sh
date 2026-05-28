@@ -1,4 +1,9 @@
 #!/bin/bash
+if [ "${{ github.event.inputs.force }}" = "true" ]; then
+    echo "Github rebuild forced, skipping version update checks."
+    exit 0
+fi
+
 echo "Checking for Debian updates of xserver-xorg-core version..."
 
 DEBIAN_VERSION=$(

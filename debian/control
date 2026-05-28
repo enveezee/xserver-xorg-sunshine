@@ -97,10 +97,6 @@ Recommends:
  libgl1-mesa-dri (>= 7.10.2-4),
  xcvt,
 Suggests: xfonts-100dpi | xfonts-75dpi, xfonts-scalable
-Provides:
- ${videoabi},
- ${inputabi},
- xserver-xorg-video-modesetting,
 Maintainer: enveezee <enveezee@gmail.com>
 Description: Headless Xorg server optimized for Sunshine streaming
  This package provides a minimal, headless Xorg build intended for
