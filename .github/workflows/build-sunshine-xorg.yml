@@ -23,6 +23,7 @@ jobs:
         env:
           REPO: ${{ github.repository }}
           FORCE: ${{ github.event.inputs.force }}
+          GITHUB_OUTPUT: $GITHUB_OUTPUT
         run: |
           chmod +x ./scripts/update-check.sh
           ./scripts/update-check.sh
