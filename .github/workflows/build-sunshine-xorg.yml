@@ -110,8 +110,12 @@ jobs:
 
           TAG="xorg-$SAFE_VERSION"
 
+          # Delete old release if it exists
+          gh release delete "$TAG" -y || true
+          git push origin :refs/tags/"$TAG" || true
+
+          # Create new release
           gh release create "$TAG" artifacts/xserver-xorg-sunshine_latest_amd64.deb \
-            --clobber \
             --title "Sunshine Xorg $DEBIAN_VERSION" \
             --notes "Automated build of Sunshine-optimized Xorg for Debian stable."
 
