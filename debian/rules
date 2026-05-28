@@ -86,5 +86,9 @@ override_dh_install:
 	dh_install --sourcedir=debian/tmp
 
 override_dh_clean:
-	dh_clean
 	rm -rf debian/build
+	dh_clean
+
+# NEW: Keeps debhelper from starting/enabling the trigger service on install
+override_dh_installsystemd:
+	dh_installsystemd --no-start --no-enable 

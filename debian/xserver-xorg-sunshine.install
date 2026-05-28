@@ -1,4 +1,6 @@
 opt/xorg-sunshine/bin
 opt/xorg-sunshine/lib
 opt/xorg-sunshine/share
-
+debian/Xorg-sunshine               usr/bin/
+debian/update-sunshine-xorg        usr/local/bin/
+debian/xserver-xorg-sunshine-update usr/local/sbin/
