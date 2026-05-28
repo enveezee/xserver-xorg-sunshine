@@ -14,8 +14,11 @@ cp debian/* "$PKGDIR/debian/"
 # Enter the source dir
 cd "$PKGDIR"
 
-# Build ONLY the renamed core package
-DH_OPTIONS="-p xserver-xorg-sunshine" dpkg-buildpackage -b -d -us -uc -Pnocheck
+# Make the Xorg-sunshine executable
+chmod +x debian/xserver-xorg-sunshine/usr/bin/Xorg-sunshine
+
+# Build the renamed core package
+dpkg-buildpackage -b -d -us -uc -Pnocheck
 
 # Move artifacts
 mkdir -p ../artifacts

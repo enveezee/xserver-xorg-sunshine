@@ -1,6 +1,4 @@
-usr/bin/Xorg-sunshine debian/xorg-sunshine-wrapper
 opt/xorg-sunshine/bin
 opt/xorg-sunshine/lib
-opt/xorg-sunshine/etc
 opt/xorg-sunshine/share
 
