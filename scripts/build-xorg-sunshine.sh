@@ -16,7 +16,7 @@ cp -r debian/* "$PKGDIR/debian/"
 cd "$PKGDIR"
 pwd
 echo "DEBUG: build proceeding as planned, if you don't see this message, this script died."
-ls -lR "$PKGDIR/debian/"
+ls -lR "$PKGDIR"
 # Build the renamed core package
 dpkg-buildpackage -b -d -us -uc -Pnocheck
 
