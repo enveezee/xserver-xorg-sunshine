@@ -4,4 +4,3 @@ opt/xorg-sunshine/share
 debian/Xorg-sunshine               usr/bin/
 debian/update-sunshine-xorg        usr/sbin/
 debian/xserver-xorg-sunshine-update usr/sbin/
-
