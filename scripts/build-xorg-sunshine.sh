@@ -7,7 +7,7 @@ if [ -z "$PKGDIR" ]; then
     echo "Source dir not found."
     exit 1
 fi
-
+echo "DEBUG: $PKGDIR"
 # Copy our package files
 cp -r debian/* "$PKGDIR/debian/"
 
