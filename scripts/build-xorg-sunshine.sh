@@ -16,7 +16,7 @@ cp -r debian/* "$PKGDIR/debian/"
 cd "$PKGDIR"
 pwd
 echo "DEBUG: build proceeding as planned, if you don't see this message, this script died."
-ls -lR "debian/"
+for f in debian/control debian/xserver-xorg-sunshine.install; do cat "$f"; echo "#####"; done
 # Build the renamed core package
 dpkg-buildpackage -b -d -us -uc -Pnocheck
 
