@@ -8,12 +8,14 @@ if [ -z "$PKGDIR" ]; then
     exit 1
 fi
 echo "DEBUG: $PKGDIR"
+ls -ld "$PKGDIR" || echo "DEBUG: $PKGDIR is not a directory"
 # Copy our package files
 cp -r debian/* "$PKGDIR/debian/"
 
 # Enter the source dir
 cd "$PKGDIR"
-
+pwd
+echo "DEBUG: build proceeding as planned, if you don't see this message, this script died."
 # Build the renamed core package
 dpkg-buildpackage -b -d -us -uc -Pnocheck
 
